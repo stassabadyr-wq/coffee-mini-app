@@ -1,0 +1,22 @@
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+env_path = Path(__file__).parent / ".env"
+load_dotenv(dotenv_path=env_path, override=True)
+
+
+def _required(key: str) -> str:
+    value = os.getenv(key)
+    if not value:
+        raise SystemExit(f"❌ Не задана переменная: {key}\nПроверь {env_path}")
+    return value.strip()
+
+
+BOT_TOKEN = _required("BOT_TOKEN")
+WEBAPP_URL = os.getenv("WEBAPP_URL", "").strip()
+
+_admin = os.getenv("ADMIN_ID", "").strip()
+ADMIN_ID = int(_admin) if _admin.isdigit() else None
+
+DB_PATH = Path(__file__).parent / "coffee.db"

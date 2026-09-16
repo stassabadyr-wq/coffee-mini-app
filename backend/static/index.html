@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Mini App — Test</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        h1 { font-size: 24px; margin-bottom: 16px; }
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .label { font-size: 12px; opacity: 0.6; margin-bottom: 4px; }
+        .value { font-size: 16px; font-weight: 600; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--tg-theme-button-color, #2ea6ff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:active { opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <h1>☕ Coffee Mini App</h1>
+    <p style="margin-bottom: 20px; opacity: 0.7;">
+        Тестовая страница. Если ты видишь данные ниже — WebApp работает!
+    </p>
+
+    <div class="card">
+        <div class="label">Имя</div>
+        <div class="value" id="user-name">—</div>
+    </div>
+
+    <div class="card">
+        <div class="label">User ID</div>
+        <div class="value" id="user-id">—</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Username</div>
+        <div class="value" id="username">—</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Платформа</div>
+        <div class="value" id="platform">—</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Цветовая схема</div>
+        <div class="value" id="color-scheme">—</div>
+    </div>
+
+    <button onclick="testBackend()">🧪 Проверить бэкенд</button>
+    <div id="backend-result" style="margin-top: 12px; font-size: 14px;"></div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            document.getElementById('user-name').textContent =
+                `${user.first_name || ''} ${user.last_name || ''}`.trim() || '—';
+            document.getElementById('user-id').textContent = user.id || '—';
+            document.getElementById('username').textContent =
+                user.username ? '@' + user.username : '—';
+        }
+
+        document.getElementById('platform').textContent = tg.platform || '—';
+        document.getElementById('color-scheme').textContent = tg.colorScheme || '—';
+
+        async function testBackend() {
+            const result = document.getElementById('backend-result');
+            result.textContent = '⏳ Запрос...';
+            try {
+                const apiUrl = 'https://preflight-goldsmith-thrift.ngrok-free.dev'; <!--поменять после перезагрузки-->
+                const resp = await fetch(apiUrl + '/api/products');
+                const data = await resp.json();
+                result.innerHTML = `✅ Бэкенд ответил: <b>${data.length}</b> товаров`;
+                tg.HapticFeedback.notificationOccurred('success');
+            } catch (e) {
+                result.textContent = '❌ Ошибка: ' + e.message;
+                tg.HapticFeedback.notificationOccurred('error');
+            }
+        }
+
+        console.log('initData:', tg.initData);
+        console.log('user:', user);
+    </script>
+</body>
+</html>
