@@ -398,7 +398,7 @@ MIT — используй свободно, в том числе в комме�
 **Станислав**  
 Telegram: [@Stasss82](https://t.me/@Stasss82)  
 Email: stassabadyr@gmail.com  
-GitHub: [github.com/yourusername](https://github.com/yourusername)
+GitHub: [github.com/stassabadyr-wq](https://github.com/stassabadyr-wq)
 
 ---
 
